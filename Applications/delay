@@ -1,0 +1,97 @@
+/*************************************************************
+delay.h
+NAME: Cukjati Jacob
+Section#: 7F31
+TA NAME: Kevin French
+Description: The header file for delays
+*************************************************************/
+
+#ifndef DELAY
+#define DELAY
+
+void delay_sec(int unsigned);
+void delay_1sec();
+void delay_10ms();
+void delay_ms(int);
+void delay_halfms();
+void delay_micro(int);
+void delay_1micro();
+
+
+/*************************************************************
+Description: delays for time*1sec
+*************************************************************/
+void delay_sec(int unsigned time){
+	for (int unsigned i=0x00;i<time;i++)
+		delay_1sec();
+}
+
+/*************************************************************
+Description: delays 1 sec
+*************************************************************/
+void delay_1sec(){
+	for (uint8_t i=0x00;i<100;i++)
+		delay_10ms();
+}
+
+/*************************************************************
+Description: delays for 10ms
+*************************************************************/
+void delay_10ms(){
+	delay_ms(10);
+}
+
+
+/*************************************************************
+Description: delays for time*1ms
+*************************************************************/
+void delay_ms(int time){
+	//because the first function is half a millisecond, we need to do it twice
+	for (int i=0x00;i<time;i++){
+		delay_halfms();
+	}
+	for (int i=0x00;i<time;i++){
+		delay_halfms();
+	}
+}
+
+/*************************************************************
+Description: delays for 0.5ms
+*************************************************************/
+void delay_halfms(){
+	uint8_t a=0xFC;
+	uint8_t b=0x00;
+	
+	asm volatile(
+	"ldi r18,%1"		"\n\t"
+	"halfms:"		"\n\t"
+	"inc r18"		"\n\t"
+	"cpi r18,%0"	"\n\t"
+	"brne halfms"	"\n\t"
+	"nop"			"\n\t"
+	:
+	:"i"(a),"i"(b)
+	);
+	
+}
+
+/*************************************************************
+Description: delays for time*1micro second
+*************************************************************/
+void delay_micro(int time){
+	for (int i=0;i<time;i++)
+		delay_1micro();
+}
+
+/*************************************************************
+Description: delays for 1 micro second
+*************************************************************/
+void delay_1micro(){
+	asm volatile(
+	"nop"			"\n\t"
+	"nop"			"\n\t"
+	);
+	
+}
+
+#endif /* DELAY*/
